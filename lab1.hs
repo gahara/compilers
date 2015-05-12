@@ -203,6 +203,28 @@ parseRegex re = conv (simplify re) <* endOfInput
         conv (Alteration re1 re2) = conv re1 <|> conv re2
         conv (Star re') = concat <$> many (conv re')
 
+--type CFGrammar = [(NonTerminal, Rule)]
+--deleteUnreachable :: CFGrammar a -> CFGrammar a
+--deleteUnreachable [] = []
+--deleteUnreachable a = searchTerminal
+-- searchTerminal :: NonTerminal -> Rule -> Bool
+
+type CFGrammar = [(NonTerminal, Rule)]
+deleteUnreachable :: CFGrammar  -> CFGrammar 
+deleteUnreachable old = loop S
+  where loop :: NonTerminal -> CFGrammar 
+        --loop nt = filter ((== nt) . fst) old ++ concatMap (loop . (\(SNonTerminal x) -> x)) (filter isNonterm old)
+        loop nt = let r = filter ((== nt) . fst) old
+          in r ++ concatMap (loop . (\(SNonTerminal x) -> x)) (filter isNonterm $ concatMap snd r)
+
+-- deleteUnreachable :: CFGrammar  -> CFGrammar 
+-- deleteUnreachable old = loop S
+--   where loop :: NonTerminal -> CFGrammar 
+--         --loop nt = filter ((== nt) . fst) old ++ (map loop (map (\(SNonTerminal x) -> x) . filter isNonterm)) --x - Nonterminal
+--         loop nt = filter ((== nt) . fst) old ++ concatMap (loop . (\(SNonTerminal x) -> x)) (filter isNonterm old)
+
+--summ :: Int -> Int -> Int
+--summ a b = a+b
 
 -- *Main> runParser
 -- *Main> let rules = [(S,[SNonTerminal (NT 'A'),STerminal 'a']), (NT 'A',[STerminal 'a',STerminal 'b'])]
