@@ -203,12 +203,10 @@ parseRegex re = conv (simplify re) <* endOfInput
         conv (Alteration re1 re2) = conv re1 <|> conv re2
         conv (Star re') = concat <$> many (conv re')
 
---type CFGrammar = [(NonTerminal, Rule)]
---deleteUnreachable :: CFGrammar a -> CFGrammar a
---deleteUnreachable [] = []
---deleteUnreachable a = searchTerminal
--- searchTerminal :: NonTerminal -> Rule -> Bool
 
+--------------
+--here begins lab 2.
+--------------
 type CFGrammar = [(NonTerminal, Rule)]
 deleteUnreachable :: CFGrammar  -> CFGrammar 
 deleteUnreachable old = loop S
